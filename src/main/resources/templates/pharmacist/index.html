@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="container bg-white">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">PharmacyOWP</a>
+      <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" th:text="#{nav.home}" th:href="@{/}" href="#"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" th:text="#{nav.medicines}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/login}" th:text="#{nav.login}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/register}" th:text="#{nav.register}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a class="nav-link" th:text="#{nav.profile}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.admin != null}">
+            <a th:href="@{/}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a th:href="@{/logout}" class="nav-link" th:text="#{nav.logout}"></a>
+          </li>
+
+        </ul>
+        <div class="d-flex">
+          <a class="btn" th:href="@{/wish-list}">
+            <i class="fa-sharp fa-solid fa-heart"></i>
+          </a>
+          <a class="btn" th:href="@{/shopping-history}">
+            <i class="fa fa-history" aria-hidden="true"></i>
+          </a>
+          <button class="btn">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </button>
+          <div
+                  class="btn dropdown d-flex justify-content-center align-items-center"
+          >
+            <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+            >
+              <i class="fa-solid fa-language"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" th:href="@{'/?lang=sr'}"
+                ><i class="fa-sharp fa-solid fa-globe"></i> SRB</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                ><i class="fa-sharp fa-solid fa-globe"></i> ENG</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <h1 class="p-3">Pharmacist panel</h1>
+  <h2 class="p-3">Medicine Approval Requests</h2>
+  <div class="col-12 p-3">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Contraindications</th>
+        <th scope="col">Form</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Manufacturer</th>
+        <th scope="col">Category</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="medicine : ${medicines}">
+        <th scope="row" th:text="${medicine.getId()}"></th>
+        <td th:text="${medicine.getTitle()}"></td>
+        <td th:text="${medicine.getDescription()}"></td>
+        <td th:text="${medicine.getContraindications()}"></td>
+        <td th:text="${medicine.getMedicineForm()}"></td>
+        <td th:text="${medicine.getAvgRating()}"></td>
+        <td th:text="${medicine.getQuantity()}"></td>
+        <td th:text="${medicine.getManufacturer().getTitle()}"></td>
+        <td th:text="${medicine.getCategory().getTitle()}"></td>
+        <td class="d-flex">
+          <a type="button" class="btn btn-success mr-2" th:href="|medicine/edit?id=${medicine.getId()}|"><i class="fas fa-edit"></i></a>
+
+          <form method="post" action="/medicine/approve" class="">
+            <input type="hidden" name="id" th:value="${medicine.getId()}">
+            <button type="submit" class="btn btn-success" th:text="Approve"></button>
+          </form>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+    <a href="/order/create" class="btn btn-primary">Create order</a>
+  </div>
+  <h2 class="p-3">Medicine Requests</h2>
+  <div class="col-12 p-3">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th scope="col">Creation date</th>
+        <th scope="col">Pharmacist</th>
+        <th scope="col">Status</th>
+        <th scope="col">View items</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}">
+        <td th:text="${order.getCreationDate()}"></td>
+        <td th:text="${order.getPharmacist().getUsername()}"></td>
+        <td th:text="${order.getStatus()}"></td>
+
+        <td class="d-flex">
+          <a type="button" class="btn btn-success mr-2" th:href="|order/view?orderID=${order.getId()}|" th:text="'View item'"><i class="fas fa-edit"></i></a>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+    <a href="/order/create" class="btn btn-primary">Create order</a>
+  </div>
+</div>
+<script type="text/javascript" th:src="@{/js/global.js}"></script>
+
+</body>
+</html>

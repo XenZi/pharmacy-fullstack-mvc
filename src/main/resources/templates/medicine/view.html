@@ -18,10 +18,95 @@
 </head>
 <body>
 <div class="container bg-white">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">PharmacyOWP</a>
+      <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" th:text="#{nav.home}" th:href="@{/}" href="#"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" th:text="#{nav.medicines}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/login}" th:text="#{nav.login}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/register}" th:text="#{nav.register}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a class="nav-link" th:href="|/user/edit?id=${session.account.getId()}|" th:text="#{nav.profile}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.admin != null}">
+            <a th:href="@{/admin}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.pharmacist != null}">
+            <a th:href="@{/pharmacist}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a th:href="@{/logout}" class="nav-link" th:text="#{nav.logout}"></a>
+          </li>
+
+        </ul>
+        <div class="d-flex">
+          <a class="btn" th:href="@{/wish-list}">
+            <i class="fa-sharp fa-solid fa-heart"></i>
+          </a>
+          <a class="btn" th:href="@{/loyalty-card}">
+            <i class="fa-regular fa-id-card"></i>
+          </a>
+          <a class="btn" th:href="@{/shopping-history}">
+            <i class="fa fa-history" aria-hidden="true"></i>
+          </a>
+          <a class="btn" th:href="@{/cart}">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <div
+                  class="btn dropdown d-flex justify-content-center align-items-center"
+          >
+            <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+            >
+              <i class="fa-solid fa-language"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" th:href="@{'/?lang=sr'}"
+                ><i class="fa-sharp fa-solid fa-globe"></i> SRB</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                ><i class="fa-sharp fa-solid fa-globe"></i> ENG</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <div class="product-view">
     <div class="row">
       <div class="col-md-6 text-center">
-        <img th:src="${medicine.getPicture()}" class="img-fluid" />
+        <img th:src="${'http://localhost:8080/uploads/images?imageName=' + medicine.getPicture()}" class="img-fluid" />
       </div>
       <div class="col-md-6">
         <h1 th:text="${medicine.getTitle()}"></h1>
@@ -37,9 +122,10 @@
                     placeholder="Quantity"
                     type="number"
                     min="1"
+                    name="quantityForCart"
                     value="1"
             />
-            <button class="btn btn-info text-white d-inline-block">
+            <button class="btn btn-info text-white d-inline-block add-to-cart-btn-view" th:attr="data-medicine_id=${medicine.getId()}">
               Add to cart
             </button>
           </div>
@@ -49,7 +135,7 @@
     </div>
     <div class="row mt-5 p-5">
       <h3>Comments</h3>
-      <form action="/comment/create" method="post">
+      <form action="/comment/create" method="post" th:if="${session.account != null && didUserBuyThisMedicine != false}">
         <h5>Leave a comment</h5>
         <input type="hidden" id="medicineID" name="medicineID" th:value="${medicine.getId()}">
         <textarea
@@ -58,12 +144,13 @@
                 id="description"
                 cols="20"
                 rows="5"
+                required
         ></textarea>
         <div class="row d-flex justify-content-between">
           <div class="col-md-6 d-flex">
             <div class="col d-flex flex-column">
               <label for="rating">Leave a rating</label>
-              <select name="rating" id="rating">
+              <select name="rating" id="rating" required>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -78,7 +165,7 @@
                       class="form-check-input m-2"
                       type="checkbox"
                       id="isAnonymous"
-                      name="isAnonymous"
+                      name="anonymous"
               />
               <label class="form-check-label" for="isAnonymous">
                 Anonymously
@@ -96,14 +183,15 @@
         <div class="col-12 mt-3 mb-3" th:each="comment : ${comments}">
           <div class="row d-flex flex-column">
             <h3>Comment</h3>
-            <h6 th:text="${comment.getUser().username}"></h6>
+            <h6 th:text="${comment.isAnonymous() ? 'Anonymous' : comment.getUser().getUsername()}"></h6>
             <p th:text="${comment.getDateSubmission()}"></p>
             <p th:text="${comment.getDescription()}">
 
             </p>
             <p th:text="${comment.getRating()}"></p>
-            <form action="/comment/delete" method="post">
+            <form action="/comment/delete" method="post" th:if="${session.account != null && (session.account.getId() == comment.getUser().getId() || session.admin != null)}">
               <input type="hidden" th:value="${comment.getId()}" name="id">
+              <input type="hidden" th:value="${comment.getMedicine().getId()}" name="medicineID">
               <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
             </form>
           </div>
@@ -112,5 +200,9 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" th:src="@{/js/global.js}"></script>
+<script type="text/javascript" th:src="@{/js/viewMedicine.js}"></script>
+
 </body>
 </html>

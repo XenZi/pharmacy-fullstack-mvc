@@ -1,6 +1,7 @@
 package com.example.owppharmacy.controller;
 
 
+import com.example.owppharmacy.enums.ERole;
 import com.example.owppharmacy.models.Account;
 import com.example.owppharmacy.models.User;
 import com.example.owppharmacy.service.IUserService;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class UserController {
     @GetMapping("")
     public String allUsers(Model model) {
         model.addAttribute("users", service.findAll());
+        model.addAttribute("roles", ERole.values());
         return "user/index";
     }
 
@@ -32,36 +35,40 @@ public class UserController {
         return "user/edit";
     }
 
-    @GetMapping("/register")
-    public String getRegister() {
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public void postRegister(@ModelAttribute Account account) {
-        service.save(account);
-    }
-
     @PostMapping("/update")
     public void postUpdate(@ModelAttribute Account account, HttpServletResponse response) throws IOException {
         service.update(account);
-        response.sendRedirect("/user");
+        response.sendRedirect("/");
     }
 
     @PostMapping("/delete")
-    public void postDelete(int id, HttpServletResponse response) throws IOException {
+    public void postDelete(@RequestParam int id, HttpServletResponse response) throws IOException {
         service.delete(id);
         response.sendRedirect("/user");
 
     }
 
     @PostMapping("/block")
-    public void postBlock(int id) {
+    public void postBlock(@RequestParam int id, HttpServletResponse response) throws IOException {
         service.block(id);
+        response.sendRedirect("/user");
     }
 
     @PostMapping("/unblock")
-    public void postUnblock(int id) {
+    public void postUnblock(@RequestParam int id, HttpServletResponse response) throws IOException {
         service.unblock(id);
+        response.sendRedirect("/user");
     }
+
+    @GetMapping("/search")
+    public String getSearchByCriteria(
+            @RequestParam(required = false, defaultValue = "-1") String username,
+            @RequestParam(required = false, defaultValue = "-1") String role,
+            @RequestParam(required = false, defaultValue = "-1") String sort,
+            Model model) {
+        model.addAttribute("users", service.findBySearchCriteria(username, role, sort));
+        model.addAttribute("roles", ERole.values());
+        return "user/index";
+    }
+
 }

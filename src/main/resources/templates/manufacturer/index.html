@@ -17,6 +17,91 @@
 <body>
 <div class="screen-height-container">
   <div class="container bg-white rounded p-5">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">PharmacyOWP</a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" th:text="#{nav.home}" th:href="@{/}" href="#"></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" th:text="#{nav.medicines}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account == null}">
+              <a class="nav-link" href="#" th:href="@{/login}" th:text="#{nav.login}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account == null}">
+              <a class="nav-link" href="#" th:href="@{/register}" th:text="#{nav.register}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account}">
+              <a class="nav-link" th:href="|/user/edit?id=${session.account.getId()}|" th:text="#{nav.profile}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account != null && session.admin != null}">
+              <a th:href="@{/admin}" class="nav-link" th:text="#{nav.admin}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account != null && session.pharmacist != null}">
+              <a th:href="@{/pharmacist}" class="nav-link" th:text="#{nav.admin}"></a>
+            </li>
+            <li class="nav-item" th:if="${session.account}">
+              <a th:href="@{/logout}" class="nav-link" th:text="#{nav.logout}"></a>
+            </li>
+
+          </ul>
+          <div class="d-flex">
+            <a class="btn" th:href="@{/wish-list}">
+              <i class="fa-sharp fa-solid fa-heart"></i>
+            </a>
+            <a class="btn" th:href="@{/loyalty-card}">
+              <i class="fa-regular fa-id-card"></i>
+            </a>
+            <a class="btn" th:href="@{/shopping-history}">
+              <i class="fa fa-history" aria-hidden="true"></i>
+            </a>
+            <a class="btn" th:href="@{/cart}">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+            <div
+                    class="btn dropdown d-flex justify-content-center align-items-center"
+            >
+              <a
+                      class="nav-link dropdown-toggle"
+                      href="#"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+              >
+                <i class="fa-solid fa-language"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" th:href="@{'/?lang=sr'}"
+                  ><i class="fa-sharp fa-solid fa-globe"></i> SRB</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                  ><i class="fa-sharp fa-solid fa-globe"></i> ENG</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <h1 class="h1 mb-3">Let's dive into categories</h1>
     <div class="row">
       <div class="col-12">

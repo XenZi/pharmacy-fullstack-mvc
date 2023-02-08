@@ -4,12 +4,13 @@ import com.example.owppharmacy.enums.ELoyaltyCardStatus;
 
 public class LoyaltyCardRequest {
     private int id;
-    private User user;
+    private Account account;
     private ELoyaltyCardStatus status;
 
-    public LoyaltyCardRequest(int id, User user, ELoyaltyCardStatus status) {
+    public LoyaltyCardRequest() {}
+    public LoyaltyCardRequest(int id, Account account, ELoyaltyCardStatus status) {
         this.id = id;
-        this.user = user;
+        this.account = account;
         this.status = status;
     }
 
@@ -21,12 +22,12 @@ public class LoyaltyCardRequest {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public ELoyaltyCardStatus getStatus() {

@@ -10,9 +10,10 @@
               crossorigin="anonymous"
       />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 <body>
-<div class="container">
+<div class="container bg-white">
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">PharmacyOWP</a>
@@ -30,26 +31,45 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link" th:text="#{nav.home}" th:href="@{/}" href="#"></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Medicines</a>
+            <a class="nav-link" href="#" th:text="#{nav.medicines}"></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/login}" th:text="#{nav.login}"></a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Register</a>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/register}" th:text="#{nav.register}"></a>
           </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a class="nav-link" th:href="|/user/edit?id=${session.account.getId()}|" th:text="#{nav.profile}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.admin != null}">
+            <a th:href="@{/admin}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.pharmacist != null}">
+            <a th:href="@{/pharmacist}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a th:href="@{/logout}" class="nav-link" th:text="#{nav.logout}"></a>
+          </li>
+
         </ul>
         <div class="d-flex">
-          <button class="btn">
+          <a class="btn" th:href="@{/wish-list}">
             <i class="fa-sharp fa-solid fa-heart"></i>
-          </button>
-          <button class="btn">
+          </a>
+          <a class="btn" th:href="@{/loyalty-card}">
+            <i class="fa-regular fa-id-card"></i>
+          </a>
+          <a class="btn" th:href="@{/shopping-history}">
+            <i class="fa fa-history" aria-hidden="true"></i>
+          </a>
+          <a class="btn" th:href="@{/cart}">
             <i class="fa-solid fa-cart-shopping"></i>
-          </button>
-          <btn
+          </a>
+          <div
                   class="btn dropdown d-flex justify-content-center align-items-center"
           >
             <a
@@ -63,7 +83,7 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="#"
+                <a class="dropdown-item" th:href="@{'/?lang=sr'}"
                 ><i class="fa-sharp fa-solid fa-globe"></i> SRB</a
                 >
               </li>
@@ -73,11 +93,56 @@
                 >
               </li>
             </ul>
-          </btn>
+          </div>
         </div>
       </div>
     </div>
   </nav>
+
+  <div class="row mb-3">
+    <form action="/user/search" method="get" class="form-search">
+      <div class="row">
+        <div class="col input-group mb-3 d-flex flex-column">
+          <label for="">Username</label>
+          <input
+                  type="text"
+                  class="form-control w-100"
+                  placeholder="Username"
+                  aria-label="name"
+                  name="username"
+                  aria-describedby="basic-addon1"
+          />
+        </div>
+        <div class="col input-group mb-3 d-flex flex-column">
+          <label for="">Role</label>
+
+          <select
+                  class="form-select w-100"
+                  aria-label="Default select example"
+                  name="role"
+          >
+            <option selected value="-1">Open this select menu</option>
+            <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
+          </select>
+        </div>
+        <div class="col input-group mb-3 d-flex flex-column">
+          <label for="">Sort</label>
+
+          <select
+                  class="form-select w-100"
+                  aria-label="Default select example"
+                  name="sort"
+          >
+            <option selected value="-1">Open this select menu</option>
+            <option value="username">Username</option>
+            <option value="role">Role</option>
+
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-outline-primary">Search</button>
+    </form>
+  </div>
   <div class="row">
     <div class="col-12">
       <table class="table table-bordered">
@@ -91,26 +156,38 @@
           <th scope="col">Date of Birth</th>
           <th scope="col">Address</th>
           <th scope="col">Phone Number</th>
+          <th scope="col">Role</th>
           <th scope="col">Registration Date</th>
         </tr>
         </thead>
         <tbody>
           <tr th:each="user : ${users}">
-            <th scope="row" th:text="${user.getAccount().getId()}"></th>
-            <td th:text="${user.account.username}"></td>
-            <td th:text="${user.account.email}"></td>
-            <td th:text="${user.account.firstName}"></td>
-            <td th:text="${user.account.lastName}"></td>
-            <td th:text="${user.account.dateOfBirth}"></td>
-            <td th:text="${user.account.address}"></td>
-            <td th:text="${user.account.phoneNumber}"></td>
-            <td th:text="${user.account.registrationDate}"></td>
+            <th scope="row" th:text="${user.getId()}"></th>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.firstName}"></td>
+            <td th:text="${user.lastName}"></td>
+            <td th:text="${user.dateOfBirth}"></td>
+            <td th:text="${user.address}"></td>
+            <td th:text="${user.phoneNumber}"></td>
+            <td th:text="${user.getUserRole()}"></td>
+            <td th:text="${user.registrationDate}"></td>
             <td class="d-flex">
-              <a type="button" class="btn btn-success mr-2" th:href="|user/edit?id=${user.account.getId()}|"><i class="fas fa-edit"></i></a>
+              <a type="button" class="btn btn-success mr-2" th:href="|user/edit?id=${user.getId()}|"><i class="fas fa-edit"></i></a>
 
               <form method="post" action="/user/delete" class="">
-                <input type="hidden" name="id" th:value="${user.account.getId()}">
+                <input type="hidden" name="id" th:value="${user.getId()}">
                 <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+              </form>
+              <form method="post" action="/user/block" class="" th:if="${user.isBlocked() == false && user.getUserRole().toString() != 'ADMIN'}">
+                <input type="hidden" name="id" th:value="${user.getId()}">
+                <button type="submit" class="btn btn-danger"><i class="fa-solid fa-ban"></i></button>
+              </form>
+              <form method="post" action="/user/unblock" th:if="${user.isBlocked() && user.getUserRole() != 'ADMIN'}">
+                <input type="hidden" name="id" th:value="${user.getId()}">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fa-solid fa-unlock"></i>
+                </button>
               </form>
             </td>
 

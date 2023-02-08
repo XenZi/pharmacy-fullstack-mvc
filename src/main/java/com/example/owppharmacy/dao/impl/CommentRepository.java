@@ -34,7 +34,7 @@ public class CommentRepository implements ICommentRepository {
             int id = resultSet.getInt(index++);
             String description = resultSet.getString(index++);
             LocalDate dateSubmission = resultSet.getDate(index++).toLocalDate();
-            User user = userService.findOne(resultSet.getInt(index++));
+            Account account = userService.findOne(resultSet.getInt(index++));
             Medicine medicine = medicineService.findOne(resultSet.getString(index++));
             boolean isAnonymous = resultSet.getBoolean(index++);
             float rating = resultSet.getFloat(index++);
@@ -42,7 +42,7 @@ public class CommentRepository implements ICommentRepository {
             comment.setId(id);
             comment.setDescription(description);
             comment.setDateSubmission(dateSubmission);
-            comment.setUser(user.getAccount());
+            comment.setUser(account);
             comment.setMedicine(medicine);
             comment.setAnonymous(isAnonymous);
             comment.setRating(rating);

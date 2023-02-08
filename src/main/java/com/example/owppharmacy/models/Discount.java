@@ -4,25 +4,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Discount {
-    private int id;
+    private String id;
     private LocalDate startDate;
     private LocalDate endDate;
     private ArrayList<MedicineCategory> discountedCategories;
 
     public Discount() {}
 
-    public Discount(int id, LocalDate startDate, LocalDate endDate, ArrayList<MedicineCategory> discountedCategories) {
+    public Discount(String id, LocalDate startDate, LocalDate endDate, ArrayList<MedicineCategory> discountedCategories) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.discountedCategories = discountedCategories;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

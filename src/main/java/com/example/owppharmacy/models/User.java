@@ -8,6 +8,10 @@ public class User {
     private LoyaltyCard loyaltyCard;
 
     public User() {
+        this.shoppingHistory = null;
+        this.wishList = null;
+        this.shoppingCart = null;
+        this.loyaltyCard = null;
     }
 
     public User(Account account, ShoppingCart shoppingCart, WishList wishList, ShoppingHistory shoppingHistory, LoyaltyCard loyaltyCard) {

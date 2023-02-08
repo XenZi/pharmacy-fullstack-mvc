@@ -24,7 +24,6 @@ public class ImageController {
     @GetMapping("/images")
     @ResponseBody
     public byte[] getImageWithMediaType(@RequestParam String imageName) throws IOException {
-        System.out.println(imageName);
         File file = fileStorageService.load(imageName).getFile();
         byte[] fileContent = Files.readAllBytes(file.toPath());
 

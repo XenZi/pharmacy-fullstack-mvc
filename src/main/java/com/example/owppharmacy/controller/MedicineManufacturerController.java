@@ -33,6 +33,7 @@ public class MedicineManufacturerController {
     public String create() {
         return "manufacturer/create";
     }
+
     @PostMapping("/create")
     public void postCreate(@ModelAttribute MedicineManufacturer manufacturer, HttpServletResponse response) throws IOException {
         service.save(manufacturer);

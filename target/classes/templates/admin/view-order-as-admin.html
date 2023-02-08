@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OWPPHarmacy</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="container bg-white p-5">
+  <h1 class="mb-3">View order</h1>
+  <div class="row order-row">
+    <div class="group border p-3" th:each="item: ${items}" th:id="${item.id}">
+      <select class="form-select mb-3 medicine-select" aria-label="Default select example">
+        <option disabled>Pick your medicine</option>
+        <option th:each="medicine : ${medicines}" th:value="${medicine.getId()}" th:text="${medicine.getTitle()}" th:selected="${medicine.getId() == item.medicine.getId()}"></option>
+
+      </select>
+      <div class="form-floating mb-3">
+            <textarea
+                    class="form-control"
+                    placeholder="Leave a comment here"
+                    id="floatingTextarea"
+                    name="description"
+                    th:text="${item.description}"
+            ></textarea>
+        <label for="floatingTextarea">Description</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input
+                type="number"
+                class="form-control"
+                id="exampleFormControlInput1"
+                placeholder="Quantity"
+                name="quantity"
+                th:value="${item.getQuantity()}"
+        />
+        <label for="exampleFormControlInput1">Quantity</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-floating mt-3 mb-3">
+            <textarea
+                    class="form-control feedback"
+                    placeholder="Leave a comment here"
+                    id="feedback"
+                    name="feedback"
+                    th:text="${order.getOrderFeedback()}"
+            ></textarea>
+    <label for="feedback">Feedback</label>
+  </div>
+
+  <button class="btn btn-outline-primary btn-update-order-feedback mt-3">Update order feedback</button>
+  <button class="btn btn-outline-primary btn-delete-order-feedback mt-3">Reject order</button>
+  <button class="btn btn-outline-primary btn-approve-order mt-3">Approve order</button>
+
+</div>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"
+></script>
+<script type="text/javascript" th:src="@{/js/medicineOrder.js}" />
+<script type="text/javascript" th:src="@{/js/global.js}"></script>
+
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

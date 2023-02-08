@@ -3,6 +3,7 @@ package com.example.owppharmacy.dao.impl;
 import com.example.owppharmacy.dao.IMedicineManufacturerRepository;
 import com.example.owppharmacy.models.MedicineManufacturer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -56,7 +57,12 @@ public class MedicineManufacturerRepository implements IMedicineManufacturerRepo
     }
 
     public MedicineManufacturer findOne(int id) {
-        String sql = "SELECT id, title, hqLocation FROM MedicineManufacturer WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new MedicineManufacturerRowMapper(), id);
+        try {
+            String sql = "SELECT id, title, hqLocation FROM MedicineManufacturer WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, new MedicineManufacturerRowMapper(), id);
+        } catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+
     }
 }

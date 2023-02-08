@@ -3,6 +3,7 @@ package com.example.owppharmacy.dao.impl;
 import com.example.owppharmacy.dao.ILoyaltyCardRepository;
 import com.example.owppharmacy.models.LoyaltyCard;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -36,9 +37,9 @@ public class LoyaltyCardRepository implements ILoyaltyCardRepository {
     }
 
     @Override
-    public void save(LoyaltyCard card) {
-        String sql = "INSERT INTO LoyaltyCard (discount, points) VALUES (?, ?)";
-        jdbcTemplate.update(sql, card.getDiscount(), card.getPoints());
+    public void save(LoyaltyCard card, int userID) {
+        String sql = "INSERT INTO LoyaltyCard (discount, points, user_id) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, card.getDiscount(), card.getPoints(), userID);
     }
 
     @Override
@@ -55,6 +56,22 @@ public class LoyaltyCardRepository implements ILoyaltyCardRepository {
 
     @Override
     public LoyaltyCard findOne(int id) {
-        return jdbcTemplate.queryForObject("SELECT id, discount, points FROM LoyaltyCard WHERE id = ?", new LoyaltyCardRowMapper(), id);
+        try {
+            return jdbcTemplate.queryForObject("SELECT id, discount, points FROM LoyaltyCard WHERE user_id = ?", new LoyaltyCardRowMapper(), id);
+        } catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+    }
+
+    @Override
+    public void removePoints(LoyaltyCard card, int points) {
+        String sql = "UPDATE LoyaltyCard SET points = ? WHERE id = ?";
+        jdbcTemplate.update(sql, points, card.getId());
+    }
+
+    @Override
+    public void addPoints(LoyaltyCard card, int points) {
+        String sql = "UPDATE LoyaltyCard SET points = ? WHERE id = ?";
+        jdbcTemplate.update(sql, points, card.getId());
     }
 }

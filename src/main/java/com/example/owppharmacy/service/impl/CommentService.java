@@ -1,11 +1,13 @@
 package com.example.owppharmacy.service.impl;
 
 import com.example.owppharmacy.dao.impl.CommentRepository;
+import com.example.owppharmacy.models.Account;
 import com.example.owppharmacy.models.Comment;
 import com.example.owppharmacy.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,9 +25,9 @@ public class CommentService {
         return repository.findAll();
     }
 
-    public void save(Comment comment, String medicineID) {
-        User user = userService.findOne(1);
-        comment.setUser(user.getAccount());
+    public void save(Comment comment, String medicineID, HttpSession session) {
+        Account account = (Account) session.getAttribute("account");
+        comment.setUser(account);
         comment.setMedicine(medicineService.findOne(medicineID));
         comment.setDateSubmission(LocalDate.now());
         repository.save(comment);

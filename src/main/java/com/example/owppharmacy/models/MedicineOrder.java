@@ -6,17 +6,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MedicineOrder {
-    private int id;
+    private String id;
     private LocalDateTime creationDate;
-    private Pharmacist pharmacist;
+    private Account pharmacist;
     private ArrayList<MedicineOrderItem> orderedItems;
     private EOrderStatus status;
     private String orderFeedback;
 
     public MedicineOrder() {
+        this.orderedItems = new ArrayList<>();
     }
 
-    public MedicineOrder(int id, LocalDateTime creationDate, Pharmacist pharmacist, ArrayList<MedicineOrderItem> orderedItems, EOrderStatus status, String orderFeedback) {
+    public MedicineOrder(String id, LocalDateTime creationDate, Account pharmacist, ArrayList<MedicineOrderItem> orderedItems, EOrderStatus status, String orderFeedback) {
         this.id = id;
         this.creationDate = creationDate;
         this.pharmacist = pharmacist;
@@ -26,11 +27,11 @@ public class MedicineOrder {
     }
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -42,11 +43,11 @@ public class MedicineOrder {
         this.creationDate = creationDate;
     }
 
-    public Pharmacist getPharmacist() {
+    public Account getPharmacist() {
         return pharmacist;
     }
 
-    public void setPharmacist(Pharmacist pharmacist) {
+    public void setPharmacist(Account pharmacist) {
         this.pharmacist = pharmacist;
     }
 

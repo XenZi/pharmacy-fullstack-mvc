@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+<div class="container bg-white">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">PharmacyOWP</a>
+      <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" th:text="#{nav.home}" th:href="@{/}" href="#"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" th:text="#{nav.medicines}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/login}" th:text="#{nav.login}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account == null}">
+            <a class="nav-link" href="#" th:href="@{/register}" th:text="#{nav.register}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a class="nav-link" th:href="|/user/edit?id=${session.account.getId()}|" th:text="#{nav.profile}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.admin != null}">
+            <a th:href="@{/admin}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account != null && session.pharmacist != null}">
+            <a th:href="@{/pharmacist}" class="nav-link" th:text="#{nav.admin}"></a>
+          </li>
+          <li class="nav-item" th:if="${session.account}">
+            <a th:href="@{/logout}" class="nav-link" th:text="#{nav.logout}"></a>
+          </li>
+
+        </ul>
+        <div class="d-flex">
+          <a class="btn" th:href="@{/wish-list}">
+            <i class="fa-sharp fa-solid fa-heart"></i>
+          </a>
+          <a class="btn" th:href="@{/loyalty-card}">
+            <i class="fa-regular fa-id-card"></i>
+          </a>
+          <a class="btn" th:href="@{/shopping-history}">
+            <i class="fa fa-history" aria-hidden="true"></i>
+          </a>
+          <a class="btn" th:href="@{/cart}">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+          <div
+                  class="btn dropdown d-flex justify-content-center align-items-center"
+          >
+            <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+            >
+              <i class="fa-solid fa-language"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" th:href="@{'/?lang=sr'}"
+                ><i class="fa-sharp fa-solid fa-globe"></i> SRB</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                ><i class="fa-sharp fa-solid fa-globe"></i> ENG</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <h2>Generate Report</h2>
+  <div class="row">
+
+    <form action="/report/search" method="get" class="mb-3 mr-3 col">
+      <div class="row flex-column">
+        <div class="col mb-3">
+          <label for="">Start date</label>
+          <input type="date" name="startDate" />
+        </div>
+        <div class="col mb-3">
+          <label for="">End date</label>
+          <input type="date" name="endDate" />
+        </div>
+      </div>
+      <div class="col mb-3">
+        <label>Sort by</label>
+        <select
+                class="form-select mb-3"
+                aria-label="Default select example"
+                name="sortBy"
+        >
+          <option value="-1" selected>Open this select menu</option>
+          <option value="medicineNameASC">Sort by name ASC</option>
+          <option value="medicineManufacturerASC">Sort by manufacturer ASC</option>
+          <option value="medicineSoldASC">Sold quantity ASC</option>
+          <option value="pricePerItemASC">Price per item ASC</option>
+          <option value="medicineNameDSC">Sort by name DSC</option>
+          <option value="medicineManufacturerDSC">Sort by manufacturer DSC</option>
+          <option value="medicineSoldDSC">Sold quantity DSC</option>
+          <option value="pricePerItemDSC">Price per item DSC</option>
+        </select>
+      </div>
+      <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+  </div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Medicine name</th>
+      <th scope="col">Manufacturer</th>
+      <th scope="col">Sold quantity</th>
+      <th scope="col">Price per item</th>
+      <th scope="col">Total price</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr th:each="item : ${items}">
+        <td th:text="${item.getMedicine().getTitle()}"></td>
+        <td th:text="${item.getManufacturer().getTitle()}"></td>
+        <td th:text="${item.getSoldQt()}"></td>
+        <td th:text="${item.getPricePerItem()}"></td>
+        <td th:text="${item.getTotalPrice()}"></td>
+      </tr>
+      <tr>
+        <th th:text="${'Earned: ' + totalEarned}"></th>
+        <th th:text="${'Sold: ' + totalSold}"></th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

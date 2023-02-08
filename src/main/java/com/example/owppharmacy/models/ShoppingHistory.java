@@ -3,29 +3,25 @@ package com.example.owppharmacy.models;
 import java.util.ArrayList;
 
 public class ShoppingHistory {
-    private User user;
-    private ArrayList<Medicine> boughtMedicineHistory;
+    private int id;
+    private ArrayList<ShoppingHistoryItem> history;
 
     public ShoppingHistory() {}
 
-    public ShoppingHistory(User user, ArrayList<Medicine> boughtMedicineHistory) {
-        this.user = user;
-        this.boughtMedicineHistory = boughtMedicineHistory;
+
+    public int getId() {
+        return id;
     }
 
-    public User getUser() {
-        return user;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public ArrayList<ShoppingHistoryItem> getHistory() {
+        return history;
     }
 
-    public ArrayList<Medicine> getBoughtMedicineHistory() {
-        return boughtMedicineHistory;
-    }
-
-    public void setBoughtMedicineHistory(ArrayList<Medicine> boughtMedicineHistory) {
-        this.boughtMedicineHistory = boughtMedicineHistory;
+    public void setHistory(ArrayList<ShoppingHistoryItem> history) {
+        this.history = history;
     }
 }

@@ -13,7 +13,6 @@ public class MedicineCategoryService {
     private MedicineCategoryRepository repository;
 
     public List<MedicineCategory> findAll() {
-        repository.findAll().forEach(el -> System.out.println(el.getId()));
         return repository.findAll();
     }
 

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @RequestMapping("/comment")
 @Service
@@ -18,8 +21,12 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/create")
-    public void postCreate(@ModelAttribute Comment comment, String medicineID) {
-        commentService.save(comment,medicineID);
+    public void postCreate(@ModelAttribute Comment comment, @ModelAttribute String anonymous, String medicineID, HttpSession session, HttpServletResponse response) throws IOException {
+        if (anonymous.equals("on")) {
+            comment.setAnonymous(true);
+        }
+        commentService.save(comment,medicineID, session);
+        response.sendRedirect("/medicine/view?id="+comment.getMedicine().getId());
     }
 
     @PostMapping("/update")
@@ -28,7 +35,8 @@ public class CommentController {
     }
 
     @PostMapping("/delete")
-    public void postUpdate(int id) {
+    public void postDelete(@RequestParam int id, @RequestParam String medicineID, HttpServletResponse response) throws IOException {
         commentService.delete(id);
+        response.sendRedirect("/medicine/view?id="+medicineID);
     }
 }
